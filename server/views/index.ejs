@@ -1,0 +1,143 @@
+<div>
+  <div class="jumbotron" style="text-align: center;background: rgb(255,255,255);margin: 0;padding-bottom: 30px;">
+      <h1 class="display-4" style="margin-bottom: 15px;">Decentralized Cab Service</h1>
+      <p class="lead" style="margin-bottom: 20px;font-size: 24px;">with Uber` you can provide a ride service, consume other services or both</p><i onClick="document.getElementById('forms-row').scrollIntoView();" class="fa fa-angle-double-down" style="font-size: 40px;border-color: #22272c;color: rgba(33,38,42,0.75);"></i>
+  </div>
+</div>
+
+<form id="track-form" class="d-flex d-sm-flex d-md-flex flex-column align-items-center align-items-sm-center justify-content-md-center align-items-md-center" style="text-align: center;">
+  <div class="form-group" style="margin-bottom: 5px;">
+    <% if (typeof tracking_id == 'string' && tracking_id) { %>
+      <% if (message=="SUCCESS") { %>
+        <h4 style="color:#5cb85c;"><%= message%></h4>
+      <% } else { %>
+        <h4 style="color:#d9534f;"><%= message%></h4>
+      <% } %>
+    <input class="form-control" type="text" id="tracking-id" placeholder="Insert Id" value=<%= tracking_id %> style="text-align: center;">
+    <% } else { %>
+      <input class="form-control" type="text" id="tracking-id" placeholder="Insert Id" style="text-align: center;">
+    <% } %>
+  </div>
+  <div class="form-group">
+    <div class="btn-group" role="group">
+      <button class="btn btn-dark" type="button" onclick="trackRideSubmit()">Track Your Offer</button>
+      <button class="btn btn-info" type="button" onclick="trackRequestSubmit()">Track Your Request</button>
+      <button class="btn btn-success" type="button" onclick="getStateSubmit()">Get State Snapshot</button>
+    </div>
+    
+  </div>
+</form>
+
+<div data-aos="fade" data-aos-delay="50" id="forms-row">
+  <div class="container">
+      <div class="row text-monospace">
+          <div class="col-md-6 form-col">
+              <div style="background: #292b2c;padding: 1px 30px;">
+                  <form id="offer-form" method="POST">
+                      <h2 style="margin-top: 5px;font-size: 28px;font-weight: bold;margin-bottom: 20px;text-align: center;padding-top: 15px;padding-bottom: 10px;color: rgb(255,255,255);">Offer a Ride</h2>
+                      <div class="form-group" style="margin-bottom: 1rem;">
+                          <div class="form-row">
+                              <div class="col"><input class="form-control" type="text" name="firstName" style="width: 100%;" placeholder="First Name"></div>
+                              <div class="col"><input class="form-control" type="text" name="lastName" style="width: 100%;" placeholder="Last Name"></div>
+                          </div>
+                      </div>
+                      <div class="form-group" style="margin-bottom: 1rem;width: 100%;padding-right: 0;"><input class="form-control" type="text" name="phoneNumber" style="width: 100%;" placeholder="Phone Number"></div>
+                      <div class="form-group" style="margin-bottom: 1rem;"><select class="form-control" id="offer-departure" name="departure" style="width: 100%;" required>
+                            <option disabled selected>From "City"</option>
+                            <% cities.forEach((city,index) => { %>
+                              <option value=<%=index%>><%=index+": "+city.name+" ("+city.x+","+city.y+")"%> </option>
+                            <% }) %>
+                          </select></div>
+                      <div class="form-group" style="margin-bottom: 1rem;"><select class="form-control" id="offer-destination" name="destination" style="width: 100%;" required>
+                            <option disabled selected>To "City"</option>
+                            <% cities.forEach((city,index) => { %>
+                              <option value=<%=index%>><%=index+": "+city.name+" ("+city.x+","+city.y+")"%> </option>
+                            <% }) %>
+                          </select></div>
+                      <div class="form-group" style="margin-bottom: 1rem;"><input class="form-control" name="date" value="2021-01-23" type="date" required></div>
+                      <div class="form-group" style="margin-bottom: 1rem;"><input class="form-control" name="vacancies" type="number" placeholder="Vacancies" style="text-align: center;" min="1" max="50" required></div>
+                      <div class="form-group" style="margin-bottom: 1rem;"><input class="form-control" name="pd" type="number" placeholder="Permitted Deviation" style="text-align: center;" required></div>
+                      <div class="form-group" style="margin-bottom: 1rem;text-align: center;"><button class="btn btn-primary" type="button" onclick="offerRide()"  style="text-align: center;background: rgb(0,0,0);width: 100%;border-color: #000000;font-weight: bold;font-size: 20px;">Submit</button></div>
+                  </form>
+              </div>
+          </div>
+          <div class="col form-col">
+            <div style="background: rgba(0,0,0,0.21);padding: 1px 30px;">
+              <form id="request-form" method="POST">
+                  <h2 style="margin-top: 5px;font-size: 28px;font-weight: bold;margin-bottom: 20px;text-align: center;padding-top: 15px;padding-bottom: 10px;">Request a Ride</h2>
+                  <div class="form-group" style="margin-bottom: 1rem;">
+                      <div class="form-row">
+                          <div class="col"><input class="form-control" type="text" name="firstName" style="width: 100%;" placeholder="First Name"></div>
+                          <div class="col"><input class="form-control" type="text" name="lastName" style="width: 100%;" placeholder="Last Name"></div>
+                      </div>
+                  </div>
+                  <div class="form-group" style="margin-bottom: 1rem;"><input class="form-control" type="text" name="phoneNumber" style="width: 100%;" placeholder="Phone Number"></div>
+                  
+                
+                  <div id="stops">
+                    <div id="stop-0">
+                      <div class="form-group" style="margin-bottom: 5px;">
+                        <select class="form-control" id="request-departure" name="stops" style="width: 100%;" required>
+                          <option disabled selected>From "City"</option>
+                          <% cities.forEach((city,index) => { %>
+                            <option value=<%=index%> ><%=index+": "+city.name+" ("+city.x+","+city.y+")"%> </option>
+                          <% }) %>
+                        </select>
+                      </div>
+                      <div class="form-group label-and-date"><label style="margin-right:5px;"for="date">Date</label><input class="form-control" style="width:100%;" name="dates" value="2021-01-23" type="date" required></div>
+                      
+                    </div>
+
+                  </div>
+                  <div class="form-group" style="margin-bottom: 5px;"><a class="shadow-sm add-stop" id="add-stop">Add Stop</a></div>
+                  <div class="form-group" style="margin-bottom: 1rem;"><select class="form-control" name="stops" style="width: 100%;" required>
+                        <option disabled selected>To "City"</option>
+                        <% cities.forEach((city,index) => { %>
+                          <option value=<%=index%> ><%=index+": "+city.name+" ("+city.x+","+city.y+")"%> </option>
+                        <% }) %>
+                      </select></div>
+                  
+                  <div class="form-group" style="margin-bottom: 1rem;text-align: center;padding: 0px 0px;"><button class="btn btn-primary" type="button" onclick="requestRide()" style="text-align: center;background: rgb(0,0,0);width: 100%;border-color: #000000;font-size: 20px;font-weight: bold;margin: 0;margin-top: 0;">Submit</button></div>
+              </form>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+
+<div class="footer-clean" style="color: rgb(255,255,255);background: rgb(0,0,0);margin-top: 30px;">
+  <footer style="background: #000000;color: rgb(255,255,255);">
+      <div class="container">
+          <div class="row justify-content-center">
+              <div class="col-sm-4 col-md-3 item">
+                  <h3 style="text-align: center;font-weight: 600;">Services</h3>
+                  <ul>
+                      <li class="footer-links"><a href="/links">Hire Vehicle</a></li>
+                      <li class="footer-links"><a href="/links">Food Delivery</a></li>
+                      <li class="footer-links"><a href="/links">Transportation</a></li>
+                  </ul>
+              </div>
+              <div class="col-sm-4 col-md-3 item">
+                  <h3 style="text-align: center;font-weight: 600;">About</h3>
+                  <ul>
+                      <li class="footer-links"><a href="/links">Company</a></li>
+                      <li class="footer-links"><a href="/links">Team</a></li>
+                      <li class="footer-links"><a href="/links">Legacy</a></li>
+                  </ul>
+              </div>
+              <div class="col-sm-4 col-md-3 item">
+                  <h3 style="text-align: center;font-weight: 600;">Careers</h3>
+                  <ul>
+                      <li class="footer-links"><a href="/links">Job openings</a></li>
+                      <li class="footer-links"><a href="/links">Employee success</a></li>
+                      <li class="footer-links"><a href="/links">Benefits</a></li>
+                  </ul>
+              </div>
+              <div class="col-lg-3 item social"><a href="/links"><i class="icon ion-social-facebook"></i></a><a href="/links"><i class="icon ion-social-twitter"></i></a><a href="/links"><i class="icon ion-social-instagram"></i></a>
+                  <p class="copyright">Muhannad Qawasmi © 2021</p>
+              </div>
+          </div>
+      </div>
+  </footer>
+</div>

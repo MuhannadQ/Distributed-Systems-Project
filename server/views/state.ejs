@@ -1,0 +1,33 @@
+
+<div style="display:flex; justify-content:space-around; align-items:center;">
+  <div>
+    Rides
+    <br/>
+    <pre >
+      <%-Rides%>
+    </pre>
+  </div>
+  <!-- //<div style="display:flex; justify-content:center; align-items:center;"> -->
+    
+  <!-- </div> -->    
+  <div>
+    Requests
+    <br/>
+    <pre >
+      <%-Requests%>
+    </pre>
+  </div>
+
+</div>
+
+<form method="GET" id="track-form" action="/" class="d-flex d-sm-flex d-md-flex flex-column align-items-center align-items-sm-center justify-content-md-center align-items-md-center" style="text-align: center;">
+  <div class="form-group" style="margin-bottom: 5px;">
+    <input class="form-control" type="text" id="tracking-id" placeholder="Insert Id" style="text-align: center;">
+  </div>
+  <div class="form-group">
+    <div class="btn-group" role="group">
+      <button class="btn btn-dark" type="button" onclick="trackRideSubmit()">GET a Ride</button>
+      <button class="btn btn-info" type="button" onclick="trackRequestSubmit()">GET a Request</button>
+    </div>
+  </div>
+</form>

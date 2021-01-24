@@ -1,0 +1,93 @@
+syntax = "proto3";
+
+package uberPackage;
+
+service Uber {
+  // rpc createRide(Ride) returns(Ride);
+  rpc getRide(Id) returns(Ride) {}; // to get a new ride from server in same city // id as param bcoz the server who posted this can continue working
+  rpc getRidesStream(CityId) returns(stream Ride) {}; // to get all rides for the state
+  rpc updateRide(UpdateData) returns(Empty) {}; //returns updated rideId
+
+  rpc getRequest(Id) returns(Request) {};
+  rpc getRequestsStream(CityId) returns(stream Request) {};
+  
+  rpc requestRide(RideRequest) returns(Id); // to get rides suitable for a client
+  rpc requestRidesStream(RideRequest) returns(stream Id); // to get rides suitable for a client
+  // need to check vacancies
+}
+message CityId {
+  int32 id = 1;
+}
+message Id {
+  string id = 1; //c1-00042342
+}
+message UpdateData {
+  string rideId = 1;
+  string requestId = 2;
+  int32 departure = 3;
+  int32 destination = 4;
+}
+// Request is when you can't take the client from your city so you ask another city if they 
+// have a ride that's going to "dest" and telling them to take the client from "departure"
+message RideRequest { // pd will be validated by the rpc client here
+  // int32 departure = 1;
+  int32 city_id = 1; //city that indicates in which city the server is requested to search in
+  int32 departure = 2;
+  int32 destination = 3;
+  string date = 4; 
+  int32 deviation = 5;
+  // int32 line_var = 4; // this is t for r(t) = (x(t), y(t)) whic is the line that goes from the server's city to our destination
+  //bool one_ride = 4; // NOT NEEDED SINCE WE USE DIFFERENT METHODS FOR requesting one ride OR many true when the user wants to request one ride and not a path
+}
+
+message Empty {}
+
+message User {
+  string first_name = 1;
+  string last_name = 2;
+  string phone_number = 3;
+}
+
+// enum Situation {
+//   GET_ON = 0;
+//   GET_OFF = 1;
+// }
+/////
+// message RequestMeta {
+//   string id = 1;
+//   string situation = 2;
+// }
+
+
+
+message Request {
+  string id = 1;
+  User passenger = 2;
+  repeated int32 stops = 3; //stops is an array of city ids the passenger visits
+  repeated string rides = 4; //ride ids that are 
+  int32 version = 5;
+}
+
+message Stop {
+  int32 city_id = 1; //index in cities array
+  int32 vacancies = 2;
+  repeated string requests = 3;
+  //int32 line_var = 3;
+}
+
+message Ride {
+  string id = 1;
+  
+  User driver = 2;
+
+  int32 departure = 3; //index in cities array
+  int32 destination = 4;
+  string date = 5;
+  int32 pd = 6; //premitted deviation
+  repeated Stop stops = 7;
+  int32 version = 8;
+}
+
+message Rides {
+  repeated Ride rides = 1;
+}

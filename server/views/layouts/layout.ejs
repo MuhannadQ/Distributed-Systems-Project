@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>uber 236351</title>
+    <link rel="icon" href="assets/img/uber-icon.svg">
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/fonts/ionicons.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
+    <link rel="stylesheet" href="assets/css/Footer-Clean.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-light navbar-expand-md" style="height: 55px;background: #000000;color: rgb(0,0,0);min-height: 55px;padding: 4px 16px;">
+        <div class="container-fluid"><a class="navbar-brand" href="/" style="height: 50px;padding: 0;"><img src="assets/img/uber-icon.svg" style="width: 50px;"></a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1" style="color: rgb(255,255,255);"><span><i class="fa fa-bars" style="font-size: 23px;"></i></span></button>
+            <div class="collapse navbar-collapse" id="navcol-1" style="background: #000000;">
+                <ul class="nav navbar-nav" style="background: #000000;">
+                  <!-- <li class="nav-item"><a class="nav-link active" style="color: rgba(255,255,255,0.88);font-size: 14px;">SERVERS</a></li>   -->
+                  <li class="nav-item">
+                    <form id="server-form" method="POST">
+                    <select onchange="getServer();" id="select-server" style="font-size: 15px;margin: 8px 15px 0px 0px; width:77px;background-color: black; border:none;outline: none; color: rgba(255,255,255,0.88);">
+                      <option disabled selected>Servers</option>
+                      <% servers.forEach(server => { %>
+                      <option value=<%=server.ip+":"+server.restPort%> ><%=server.ip+":"+server.restPort%> </option>
+                      <% }) %>
+                    </select>
+                    </form></li>
+                    <li class="nav-item"><a class="nav-link" href="/links" style="color: rgba(255,255,255,0.5);font-size: 14px;">Safety</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/links" style="color: rgba(255,255,255,0.5);font-size: 14px;">Help</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/links" style="color: rgba(255,255,255,0.5);font-size: 14px;">COVID-19 resources</a></li>
+                </ul>
+                <ul class="nav navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link" href="/links" style="color: rgb(255,255,255,0.9);font-size: 14px;"><i class="fas fa-globe" style="font-size: 16px;margin-right: 3px;"></i>EN</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/links" style="color: rgb(255,255,255,0.9);font-size: 14px;"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" class="bi bi-grid-3x3-gap-fill" style="margin-right: 3px;margin-bottom: 5px;font-size: 16px;">
+                                <path d="M1 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V2zM1 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V7zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V7zM1 12a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-2z"></path>
+                            </svg>Products</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/links" style="color: rgba(255,255,255,0.9);font-size: 14px;"><i class="fa fa-user-o" style="font-size: 16px;margin-right: 3px;"></i>Log in</a></li>
+                    <li class="nav-item"><a class="btn btn-primary" href="/links" role="button" style="color: rgb(0,0,0);background: rgb(255,255,255);border-radius: 18px;font-size: 14px;border-color: rgb(255,255,255);">Sign up</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+  <%- body %>
+
+ 
+    <script src="assets/js/mycode.js"></script>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/bs-init.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+</body>
+
+</html>
